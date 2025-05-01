@@ -72,7 +72,7 @@ export default function Home() {
     <>
       <section className="py-40">
         <div className="container">
-          <h2 className="text-xl text-black font-bold mb-10">최신 작성 글</h2>
+          <h2 className="text-2xl text-black font-bold mb-10">포스트 목록</h2>
           <div className="grid grid-cols-4 gap-6">
             {error ? (
               <div className="col-span-4 text-center text-red-500 rounded-xl p-6 bg-red-50">{error}</div>
@@ -120,7 +120,7 @@ export default function Home() {
                   </div>
 
                   <div className="flex items-center justify-between mt-3 p-4 border-t border-gray-200">
-                    <span className="text-[11px] font-semibold text-green-600 py-1 px-2 rounded-lg bg-green-50">
+                    <span className="text-[11px] font-semibold text-green-600 py-1 px-2 rounded-lg bg-green-100">
                       {post.categories?.name}
                     </span>
                     <span className="text-gray-500 text-xs">{formatDate(post.created_at)}</span>
