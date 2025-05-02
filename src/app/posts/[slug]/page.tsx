@@ -21,19 +21,23 @@ type Post = {
   };
 };
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { data: post } = await supabase.from('posts').select('title').eq('slug', params.slug).single();
+type PageParams = Promise<{ slug: string }>;
+
+export async function generateMetadata({ params }: { params: PageParams }) {
+  const slug = await params;
+  const { data: post } = await supabase.from('posts').select('title').eq('slug', slug.slug).single();
 
   return {
     title: post?.title + ' | Soohyun.dev' || '게시물 | Soohyun.dev',
   };
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+export default async function Post({ params }: { params: PageParams }) {
+  const slug = await params;
   const { data: post, error } = await supabase
     .from('posts')
     .select(`*, categories(name)`)
-    .eq('slug', params.slug)
+    .eq('slug', slug.slug)
     .single();
 
   if (error || !post) {
