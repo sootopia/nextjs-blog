@@ -1,20 +1,35 @@
+'use client';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
-export default async function Header() {
-  const { data: latestPost } = await supabase
-    .from('posts')
-    .select('slug')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+export default function Header() {
+  const [latestPostSlug, setLatestPostSlug] = useState<string | null>(null);
+  const [latestUpdatedPostSlug, setLatestUpdatedPostSlug] = useState<string | null>(null);
+  const { user, isLoading, signOut } = useAuth();
 
-  const { data: latestUpdatedPost } = await supabase
-    .from('posts')
-    .select('slug')
-    .order('updated_at', { ascending: false })
-    .limit(1)
-    .single();
+  useEffect(() => {
+    const fetchSlugs = async () => {
+      const latest = await supabase
+        .from('posts')
+        .select('slug')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      const updated = await supabase
+        .from('posts')
+        .select('slug')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      setLatestPostSlug(latest.data?.slug ?? null);
+      setLatestUpdatedPostSlug(updated.data?.slug ?? null);
+    };
+
+    fetchSlugs();
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 h-[70px] border-b border-gray-200 bg-white z-[1100]">
@@ -24,28 +39,49 @@ export default async function Header() {
         </Link>
 
         <nav>
-          <ul className="flex gap-6">
+          <ul className="flex gap-6 items-center">
             <li>
               <Link href="/" className="text-sm text-gray-700 hover:opacity-50">
                 블로그
               </Link>
             </li>
 
-            {latestPost?.slug && (
+            {latestPostSlug && (
               <li>
-                <Link href={`/posts/${latestPost.slug}`} className="text-sm text-gray-700 hover:opacity-50">
+                <Link href={`/posts/${latestPostSlug}`} className="text-sm text-gray-700 hover:opacity-50">
                   최신 작성글
                 </Link>
               </li>
             )}
 
-            {latestUpdatedPost?.slug && (
+            {latestUpdatedPostSlug && (
               <li>
-                <Link href={`/posts/${latestUpdatedPost.slug}`} className="text-sm text-gray-700 hover:opacity-50">
+                <Link href={`/posts/${latestUpdatedPostSlug}`} className="text-sm text-gray-700 hover:opacity-50">
                   최신 수정글
                 </Link>
               </li>
             )}
+
+            {isLoading
+              ? null
+              : user && (
+                  <li>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href="/write-post"
+                        className="inline-flex text-sm text-gray-800 px-3 h-10 items-center border border-gray-300 rounded-lg bg-white hover:bg-gray-50 hover:opacity-75"
+                      >
+                        포스트 작성
+                      </Link>
+                      <button
+                        onClick={signOut}
+                        className="inline-flex text-sm text-gray-800 px-3 h-10 items-center border border-gray-300 rounded-lg bg-white hover:bg-gray-50 hover:opacity-75"
+                      >
+                        로그아웃
+                      </button>
+                    </div>
+                  </li>
+                )}
           </ul>
         </nav>
       </div>
