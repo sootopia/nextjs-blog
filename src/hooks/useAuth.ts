@@ -48,6 +48,20 @@ export const useAuth = () => {
     };
 
     initializeAuth();
+
+    // 세션 변경시 상태 자동 반영 (인증 상태 변경 감지)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        const profile = await fetchUserProfile(session.user.id);
+        setUser({ ...session.user, profile });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return {
