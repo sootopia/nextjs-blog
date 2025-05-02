@@ -6,6 +6,12 @@ import rehypeHighlight from 'rehype-highlight';
 import readingTime from 'reading-time';
 import 'highlight.js/styles/github-dark.css';
 
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+
 type Post = {
   id: string;
   title: string;
@@ -21,7 +27,7 @@ type Post = {
   };
 };
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: PageProps) {
   const { data: post } = await supabase.from('posts').select('title').eq('slug', params.slug).single();
 
   return {
@@ -29,7 +35,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+export default async function Post({ params }: PageProps) {
   const { data: post, error } = await supabase
     .from('posts')
     .select(`*, categories(name)`)
