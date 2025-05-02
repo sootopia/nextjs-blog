@@ -1,1 +1,24 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@layer components {
+  .container {
+    @apply mx-auto max-w-[1240px]! px-5;
+  }
+
+  .prose code {
+    @apply bg-red-100 text-red-700! px-1 py-0.5 rounded before:hidden after:hidden;
+  }
+
+  .prose pre {
+    @apply bg-[#0d1117]!;
+  }
+
+  .prose pre code {
+    @apply bg-transparent text-gray-300!;
+  }
+}
+
+button {
+  cursor: pointer;
+}
