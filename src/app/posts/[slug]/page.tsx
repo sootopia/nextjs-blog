@@ -21,6 +21,14 @@ type Post = {
   };
 };
 
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const { data: post } = await supabase.from('posts').select('title').eq('slug', params.slug).single();
+
+  return {
+    title: post?.title + ' | Soohyun.dev' || '게시물 | Soohyun.dev',
+  };
+}
+
 export default async function Post({ params }: { params: { slug: string } }) {
   const { data: post, error } = await supabase
     .from('posts')
