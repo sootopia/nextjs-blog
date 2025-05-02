@@ -2,7 +2,9 @@ import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 import readingTime from 'reading-time';
+import 'highlight.js/styles/github-dark.css';
 
 type Post = {
   id: string;
@@ -64,7 +66,9 @@ export default async function Post({ params }: { params: { slug: string } }) {
             </div>
           </div>
           <div className="prose max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{post?.content}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+              {post?.content}
+            </ReactMarkdown>
           </div>
         </div>
       </div>
