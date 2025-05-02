@@ -17,7 +17,7 @@ export default async function Header() {
     .single();
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-[70px] border-b border-gray-200">
+    <header className="fixed top-0 left-0 right-0 h-[70px] border-b border-gray-200 bg-white z-[1100]">
       <div className="container h-full flex items-center justify-between">
         <Link href="/" className="text-xl text-black font-bold hover:opacity-50">
           Soohyun.dev
